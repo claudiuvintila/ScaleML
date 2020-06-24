@@ -5,3 +5,4 @@ https://www.jetbrains.com/help/pycharm/configuring-local-python-interpreters.htm
 https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html
 4. Install dependencies from terminal from project folder:
 ```pip install -r requirements.txt```
+5. Install docker
