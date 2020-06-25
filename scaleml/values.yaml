@@ -2,12 +2,29 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
+rabbitmq:
+  host: rabbitmq
+  user: user
+  pass: pass
 
-image:
-  repository: nginx
-  tag: stable
-  pullPolicy: IfNotPresent
+
+api:
+  image:
+    repository: claudiuvintila/scaleml-api
+    tag: v1
+    pullPolicy: Always
+  replicaCount: 2
+  apiExchange: api_exchange
+  apiQueue: api_queue
+
+worker:
+  image:
+    repository: claudiuvintila/scaleml-worker
+    tag: v1
+    pullPolicy: Always
+  replicaCount: 3
+  workerExchange: worker_exchange
+  workerQueue: worker_queue
 
 imagePullSecrets: []
 nameOverride: ""
@@ -18,13 +35,14 @@ service:
   port: 80
 
 ingress:
-  enabled: false
+  enabled: true
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: chart-example.local
-      paths: []
+    - host: scaleml.demo
+      paths: ['/']
+      service: api
 
   tls: []
   #  - secretName: chart-example-tls
