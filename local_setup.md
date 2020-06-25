@@ -17,10 +17,21 @@ https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html
 ```minikube start --memory 2048 --cpus 2 --kubernetes-version v1.14.7```
 10. Install Helm in cluster
     - ```helm init```
-    - For Azure Cluster also run this: ```kubectl --namespace kube-system patch deploy tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'```
+    - For Azure Cluster also run this fix: ```kubectl --namespace kube-system patch deploy tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'```
 11. Install RabbitMQ and Ingress helm charts
     - ```helm repo add bitnami https://charts.bitnami.com/bitnami```
-    - ```helm install --name rabbitmq --version 5.3.0 --set ingress.hosts[0].host="mini.kube" --set rabbitmq.password=pass bitnami/rabbitmq```
-    - ```helm install --name ingress --set controller.service.externalIPs={"$(minikube ip)"} stable/nginx-ingress```  Note: externalIPs needs to be set only for a minikube cluster
+    - ```helm install --name rabbitmq --version 5.3.0 --set rabbitmq.password=pass bitnami/rabbitmq```
+    - For Minikube: ```helm install --name ingress --set controller.service.externalIPs={"$(minikube ip)"} stable/nginx-ingress```
+    - For Azure: ```helm install --name ingress stable/nginx-ingress```
 12. Install ScaleML helm chart
 ```helm install --name scaleml scaleml```
+13. Set "<ip>   scaleml.demo" in your hosts file on your machine (/etc/hosts on Unix systems)
+    - For Minikube ip is: ```minikube ip```
+    - For Azure ip is: ```kubectl -n et-it get services -l app=nginx-ingress,component=controller --output jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}'```
+
+13. Install Azure CLI https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest
+14. Create an Azure account and an AKS (Azure Kubernetes Cluster) with name <name> in resource group named <resource-group>
+15. Get the credentials for that cluster with name <name> in resource group <resource-group>
+    - ```az login```
+    - ```az aks get-credentials --resource-group <resource-group> --name <name> --admin --overwrite-existing```
+16. Redo 10, 11 and 12
